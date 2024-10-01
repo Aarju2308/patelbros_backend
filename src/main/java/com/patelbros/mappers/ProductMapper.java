@@ -52,7 +52,7 @@ public class ProductMapper {
 				.name(product.getName())
 				.descrtiption(product.getDescription())
 				.price(product.getPrice())
-				.image(fileUtils.readFile(product.getPicture()))
+				.image(product.getPicture())
 				.active(product.isActive())
 				.rating(product.getRating())
 				.build();

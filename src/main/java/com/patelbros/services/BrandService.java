@@ -1,5 +1,6 @@
 package com.patelbros.services;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -24,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BrandService {
 	private final BrandRepository brandRepository;
-	private final FileStorageService fileStorageService;
+	// private final FileStorageService fileStorageService;
 	private final BrandMapper brandMapper;
 	
 	public Integer addBrand(BrandRequest request) {
@@ -41,17 +42,38 @@ public class BrandService {
 		
 		return brandRepository.save(brand).getId();
 	}
-	
+
 	public void uploadBrandLogo(MultipartFile file, Integer brandId) {
 		var brand = brandRepository.findById(brandId).orElseThrow(
-				()->new OperationNotPermittedException("No brand found with id : "+brandId)
-				);
+				() -> new OperationNotPermittedException("No brand found with id: " + brandId)
+		);
+	
+		try {
+			// Convert the file to byte array
+			byte[] logoBytes = file.getBytes();
+			
+			// Set the byte array as the brand's logo
+			brand.setLogo(logoBytes);
+	
+			// Save the updated brand entity
+			brandRepository.save(brand);
+	
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to store logo in database", e);
+		}
+	}
+	
+	
+	// public void uploadBrandLogo(MultipartFile file, Integer brandId) {
+	// 	var brand = brandRepository.findById(brandId).orElseThrow(
+	// 			()->new OperationNotPermittedException("No brand found with id : "+brandId)
+	// 			);
 		
-		System.out.println("Adding Logo");
-		String logoPath = fileStorageService.saveFile(file,"brands");
-		brand.setLogo(logoPath);
-		brandRepository.save(brand);
-	} 
+	// 	System.out.println("Adding Logo");
+	// 	String logoPath = fileStorageService.saveFile(file,"brands");
+	// 	brand.setLogo(logoPath);
+	// 	brandRepository.save(brand);
+	// } 
 
 	public PageResponse<BrandResponse> getBrandPage(int page, int size) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").ascending());

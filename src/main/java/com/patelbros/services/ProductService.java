@@ -1,5 +1,6 @@
 package com.patelbros.services;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -60,10 +61,19 @@ public class ProductService {
 		Product product = productRepository.findById(productId).orElseThrow(
 					()-> new OperationNotPermittedException("No Product found with id : "+productId)
 				);
-		String filePath = fileStorageService.saveFile(file,"products");
-		product.setPicture(filePath);
-		
-		productRepository.save(product);
+		try {
+			// Convert the file to byte array
+			byte[] logoBytes = file.getBytes();
+			
+			// Set the byte array as the brand's logo
+			product.setPicture(logoBytes);
+	
+			// Save the updated brand entity
+			productRepository.save(product);
+	
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to store logo in database", e);
+		}		
 	}
 
 	public PageResponse<ProductResponse> getProductsPage(int page, int size) {

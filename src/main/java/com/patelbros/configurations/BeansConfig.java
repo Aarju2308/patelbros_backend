@@ -23,7 +23,7 @@ import org.springframework.web.filter.CorsFilter;
 @Configuration
 public class BeansConfig {
 	
-	@Value("${spring.security.origins}")
+	@Value("#{'${spring.security.origins}'.split(',')}")
 	private ArrayList<String> allowedOrigins;
 
 	@Bean

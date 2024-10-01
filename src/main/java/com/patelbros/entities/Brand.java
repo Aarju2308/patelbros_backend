@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,9 @@ public class Brand extends BaseEntity {
 	@Column(unique = true)
 	private String brand;
 	
-	private String logo;
+	@Lob
+	@Column(columnDefinition = "LONGBLOB")
+	private byte[] logo;
 	
 	private boolean active;
 	
