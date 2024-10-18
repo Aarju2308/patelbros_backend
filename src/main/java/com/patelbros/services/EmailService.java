@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -25,6 +26,9 @@ public class EmailService {
 
 	private final SpringTemplateEngine templateEngine;
 	private final JavaMailSender mailSender;
+
+	@Value("${frontend.url}")
+	private final String FRONTEND_URL;
 	
 	
 	@Async
@@ -46,7 +50,7 @@ public class EmailService {
 		
 		Map<String, Object> properties = new HashMap<String, Object>();
 		properties.put("username", username);
-		properties.put("confirmationUrl", "localhost:4200/verify-account?validatinOtp="+activationCode);
+		properties.put("confirmationUrl", FRONTEND_URL+"/verify-account?validatinOtp="+activationCode);
 		properties.put("activation_code", activationCode);
 		
 		Context context = new Context();

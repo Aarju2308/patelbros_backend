@@ -3,6 +3,7 @@ package com.patelbros.services;
 import java.security.SecureRandom;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -48,8 +49,11 @@ public class OrderService {
 	private final EmailService emailService;
 	private final OrderMapper orderMapper;
 	
-	private final String successUrl = "http://localhost:4200/success"; 
-	private final String failedUrl = "http://localhost:4200/failed"; 
+	@Value("${frontend.url}")
+	private final String FRONTEND_URL = "";
+	
+	private final String successUrl = FRONTEND_URL+"/success"; 
+	private final String failedUrl = FRONTEND_URL+"/failed"; 
 	
 	public List<OrderResponse> getAllOrders(Authentication authentication) {
 		User user = (User)authentication.getPrincipal();
